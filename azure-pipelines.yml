@@ -54,12 +54,3 @@ steps:
       SourceFolder: "$(Build.ArtifactStagingDirectory)/app/dist"
 
       Contents: server.js
-
-  - task: AzureRmWebAppDeployment@4
-    displayName: 'Azure App Service Deploy: example-project'
-    inputs:
-      azureSubscription: 'Azure subscription 1'
-      WebAppName: 'clinic-app'
-      packageForLinux: '$(Build.ArtifactStagingDirectory)'
-      enableCustomDeployment: true
-      RemoveAdditionalFilesFlag: true
