@@ -54,3 +54,26 @@ steps:
       SourceFolder: "$(Build.ArtifactStagingDirectory)/app/dist"
 
       Contents: server.js
+
+  - task: AzureRmWebAppDeployment@3
+    displayName: "Azure App Service Deploy: website"
+    inputs:
+      azureSubscription: "Azure subscription 1"
+
+      WebAppName: clinic-app
+
+      DeployToSlotFlag: true
+
+      ResourceGroupName: admin
+
+      SlotName: main
+
+      Package: "$(Build.ArtifactStagingDirectory)/app"
+
+      GenerateWebConfig: true
+
+      WebConfigParameters: "-Handler iisnode -NodeStartFile server.js -appType node"
+
+      UseWebDeploy: true
+
+      RemoveAdditionalFilesFlag: true
