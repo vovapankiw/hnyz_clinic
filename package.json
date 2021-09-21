@@ -9,7 +9,7 @@
     "test": "ng test",
     "dev:ssr": "ng run test-ssr:serve-ssr",
     "serve:ssr": "node dist/test-ssr/server/main.js",
-    "build:ssr": "ng build && ng run test-ssr:server",
+    "build:ssr": "ng build --prod && ng run angular-ssr:server:production",
     "prerender": "ng run test-ssr:prerender"
   },
   "private": true,
