@@ -33,16 +33,16 @@ steps:
     displayName: "build the project"
 
   - task: CopyFiles@2
-    displayName: "Copy server files to staging"
+    displayName: "Copy client to the root"
     inputs:
-      SourceFolder: "$(Build.SourcesDirectory)/dist/clinic/server"
+      SourceFolder: "$(Build.ArtifactStagingDirectory)/dist/clinic/browser"
 
       TargetFolder: "$(Build.ArtifactStagingDirectory)/deploy-dist"
 
   - task: CopyFiles@2
-    displayName: "Copy client to the root"
+    displayName: "Copy server files to staging"
     inputs:
-      SourceFolder: "$(Build.ArtifactStagingDirectory)/dist/clinic/browser"
+      SourceFolder: "$(Build.SourcesDirectory)/dist/clinic/server"
 
       TargetFolder: "$(Build.ArtifactStagingDirectory)/deploy-dist"
 
