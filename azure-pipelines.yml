@@ -33,24 +33,18 @@ steps:
     displayName: "build the project"
 
   - task: CopyFiles@2
-    displayName: "Copy client to the root"
+    displayName: "Copy client to the root/browser"
     inputs:
       SourceFolder: "$(Build.SourcesDirectory)/dist/clinic/browser"
 
       TargetFolder: "$(Build.ArtifactStagingDirectory)/deploy-dist/browser"
 
   - task: CopyFiles@2
-    displayName: "Copy server files to staging"
+    displayName: "Copy server to the root"
     inputs:
       SourceFolder: "$(Build.SourcesDirectory)/dist/clinic/server"
 
       TargetFolder: "$(Build.ArtifactStagingDirectory)/deploy-dist"
-
-  - task: PowerShell@2
-    displayName: "Copy Specific Config"
-    inputs:
-      targetType: inline
-      script: Copy-Item -Path "$(Build.ArtifactStagingDirectory)/deploy-dist/main.js" -Destination "$(Build.ArtifactStagingDirectory)/deploy-dist/index.js"
 
   - task: AzureRmWebAppDeployment@4
     displayName: "Azure App Service Deploy: website"
@@ -63,12 +57,10 @@ steps:
 
       ResourceGroupName: admin
 
-      packageForLinux: dist
-
       GenerateWebConfig: true
 
-      WebConfigParameters: "-Handler iisnode -NodeStartFile index.js -appType node"
+      WebConfigParameters: "-Handler iisnode -NodeStartFile main.js -appType node"
 
-      UseWebDeploy: false
+      UseWebDeploy: true
 
       RemoveAdditionalFilesFlag: true
