@@ -57,9 +57,9 @@ steps:
 
       ResourceGroupName: admin
 
-      GenerateWebConfig: true
+      Package: "$(Build.ArtifactStagingDirectory)/deploy-dist"
 
-      packageForLinux: true
+      GenerateWebConfig: true
 
       WebConfigParameters: "-Handler iisnode -NodeStartFile main.js -appType node"
 
