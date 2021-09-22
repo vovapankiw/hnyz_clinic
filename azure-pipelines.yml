@@ -35,7 +35,7 @@ steps:
   - task: CopyFiles@2
     displayName: "Copy client to the root"
     inputs:
-      SourceFolder: "$(Build.ArtifactStagingDirectory)/dist/clinic/browser"
+      SourceFolder: "$(Build.SourcesDirectory)/dist/clinic/browser"
 
       TargetFolder: "$(Build.ArtifactStagingDirectory)/deploy-dist"
 
