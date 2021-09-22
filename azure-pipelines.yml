@@ -45,12 +45,12 @@ steps:
       SourceFolder: "$(Build.SourcesDirectory)/dist/clinic/server"
 
       TargetFolder: "$(Build.ArtifactStagingDirectory)/deploy-dist"
-    
-  - task: CmdLine@2
-    displayName: "Rename main.js to index.js"
+
+  - task: PowerShell@2
+    displayName: "Copy Specific Config"
     inputs:
-      script: ren $(Build.ArtifactStagingDirectory)/deploy-dist/main.js 
-      $(Build.ArtifactStagingDirectory)/deploy-dist/index.js
+      targetType: inline
+      script: Copy-Item -Path "$(Build.ArtifactStagingDirectory)/deploy-dist/main.js" -Destination "$(Build.ArtifactStagingDirectory)/deploy-dist/index.js"
 
   - task: AzureRmWebAppDeployment@4
     displayName: "Azure App Service Deploy: website"
