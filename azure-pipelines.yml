@@ -51,7 +51,7 @@ steps:
     inputs:
       azureSubscription: myAngularService
 
-      WebAppName: clinic-app
+      WebAppName: angular-ssr
 
       DeployToSlotFlag: true
 
