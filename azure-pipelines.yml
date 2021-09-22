@@ -37,7 +37,7 @@ steps:
     inputs:
       SourceFolder: "$(Build.SourcesDirectory)/dist/clinic/browser"
 
-      TargetFolder: "$(Build.ArtifactStagingDirectory)/deploy-dist"
+      TargetFolder: "$(Build.ArtifactStagingDirectory)/deploy-dist/browser"
 
   - task: CopyFiles@2
     displayName: "Copy server files to staging"
@@ -45,6 +45,12 @@ steps:
       SourceFolder: "$(Build.SourcesDirectory)/dist/clinic/server"
 
       TargetFolder: "$(Build.ArtifactStagingDirectory)/deploy-dist"
+    
+  - task: CmdLine@2
+  displayName: "Rename main.js to index.js"
+    inputs:
+      script: ren $(Build.ArtifactStagingDirectory)/deploy-dist/main.js 
+      $(Build.ArtifactStagingDirectory)/deploy-dist/index.js
 
   - task: AzureRmWebAppDeployment@4
     displayName: "Azure App Service Deploy: website"
@@ -57,13 +63,11 @@ steps:
 
       ResourceGroupName: admin
 
-      SlotName: main
-
       packageForLinux: dist
 
       GenerateWebConfig: true
 
-      WebConfigParameters: "-Handler iisnode -NodeStartFile main.js -appType node"
+      WebConfigParameters: "-Handler iisnode -NodeStartFile index.js -appType node"
 
       UseWebDeploy: false
 
