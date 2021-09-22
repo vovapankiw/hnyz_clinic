@@ -59,10 +59,10 @@ steps:
 
       GenerateWebConfig: true
 
+      packageForLinux: true
+
       WebConfigParameters: "-Handler iisnode -NodeStartFile main.js -appType node"
 
       UseWebDeploy: true
 
       RemoveAdditionalFilesFlag: true
-
-      packageForLinux: "$(Build.ArtifactStagingDirectory)/*.zip"
