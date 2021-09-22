@@ -3,12 +3,12 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
+    "start": "npm run serve:ssr",
+    "build": "npm run build:ssr",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "dev:ssr": "ng run test-ssr:serve-ssr",
-    "serve:ssr": "node dist/test-ssr/server/main.js",
+    "serve:ssr": "node dist/clinic/server/main.js",
     "build:ssr": "ng build --prod && ng run test-ssr:server:production",
     "prerender": "ng run test-ssr:prerender"
   },
