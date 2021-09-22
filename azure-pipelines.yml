@@ -63,6 +63,6 @@ steps:
 
       WebConfigParameters: "-Handler iisnode -NodeStartFile main.js -appType node"
 
-      UseWebDeploy: true
+      UseWebDeploy: false
 
       RemoveAdditionalFilesFlag: true
