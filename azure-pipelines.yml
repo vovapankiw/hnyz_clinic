@@ -13,8 +13,6 @@ pool:
 
 stages:
   - stage: Preparation
-    displayName: Install all dependencies
-    dependsOn: []
       steps:
       - task: NodeTool@0
         inputs:
