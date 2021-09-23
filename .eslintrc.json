@@ -19,7 +19,11 @@
         "plugin:@angular-eslint/template/process-inline-templates",
         "plugin:@angular-eslint/ng-cli-compat",
         "plugin:@angular-eslint/ng-cli-compat--formatting-add-on",
-        "airbnb-typescript/base"
+        "airbnb-typescript/base",
+        "prettier",
+        "plugin:prettier/recommended",
+        "plugin:@typescript-eslint/recommended-requiring-type-checking",
+        "plugin:@typescript-eslint/recommended"
       ],
       "rules": {
         "@angular-eslint/directive-selector": [
