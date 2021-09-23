@@ -4,77 +4,95 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
 trigger:
-  - main
+   branches:
+    include:
+    - develop
 
 pool:
   vmImage: ubuntu-latest
 
-steps:
-  - task: NodeTool@0
-    inputs:
-      versionSpec: '14.x'
-    displayName: 'Install Node.js'
+stages:
+  - stage: Preparation
+    displayName: Install all dependencies
+    steps:
+      - task: NodeTool@0
+        inputs:
+          versionSpec: '14.x'
+        displayName: 'Install Node.js'
 
-  - task: Npm@1
-    displayName: 'npm install angular cli'
-    inputs:
-      command: custom
+      - task: Npm@1
+        displayName: 'npm install angular cli'
+        inputs:
+          command: custom
 
-      verbose: false
+          verbose: false
 
-      customCommand: 'install @angular/cli -g'
+          customCommand: 'install @angular/cli -g'
 
-  - task: Npm@1
-    displayName: 'npm install packages'
-    inputs:
-      verbose: false
+      - task: Npm@1
+        displayName: 'npm install packages'
+        inputs:
+          verbose: false
 
-  - task: Npm@1
-    displayName: 'Running Lint'
-    inputs:
-      command: 'custom'
-      customCommand: 'run lint'
-  # Comment to save free time on pipeline
-  # - task: Npm@1
-  #   displayName: 'Runing Test'
-  #   inputs:
-  #     command: 'custom'
-  #     customCommand: 'run test'
+  - stage: RunLinters
+      displayName: Run Linters
+      dependsOn: [Preparation]
+      steps:
+        - task: Npm@1
+          displayName: 'Running Lint'
+          inputs:
+            command: 'custom'
+            customCommand: 'run lint'
 
-  - script: 'npm run build:ssr'
-    displayName: 'build the project'
+  - stage: RunTests
+      displayName: Run Tests
+      dependsOn: [RunLinters]
+      steps:
+        - task: Npm@1
+          displayName: 'Running Test'
+          inputs:
+            command: 'custom'
+            customCommand: 'run test'
 
-  - task: CopyFiles@2
-    displayName: 'Copy client to the root/browser'
-    inputs:
-      SourceFolder: '$(Build.SourcesDirectory)/dist/clinic/browser'
+  - stage: build
+    dependsOn: [RunTests]
+    condition: and(succeeded('RunTests'), True))
+    steps:
+      - script: 'npm run build:ssr'
+        displayName: 'build the project'
 
-      TargetFolder: '$(Build.ArtifactStagingDirectory)/deploy-dist/browser'
+      - task: CopyFiles@2
+        displayName: 'Copy client to the root/browser'
+        inputs:
+          SourceFolder: '$(Build.SourcesDirectory)/dist/clinic/browser'
 
-  - task: CopyFiles@2
-    displayName: 'Copy server to the root'
-    inputs:
-      SourceFolder: '$(Build.SourcesDirectory)/dist/clinic/server'
+          TargetFolder: '$(Build.ArtifactStagingDirectory)/deploy-dist/browser'
 
-      TargetFolder: '$(Build.ArtifactStagingDirectory)/deploy-dist'
+      - task: CopyFiles@2
+        displayName: 'Copy server to the root'
+        inputs:
+          SourceFolder: '$(Build.SourcesDirectory)/dist/clinic/server'
 
-  - task: AzureRmWebAppDeployment@4
-    displayName: 'Azure App Service Deploy: website'
-    inputs:
-      azureSubscription: myAngularService
+          TargetFolder: '$(Build.ArtifactStagingDirectory)/deploy-dist'
 
-      WebAppName: angular-ssr
+  - stage: deploy
+    - task: AzureRmWebAppDeployment@4
+      displayName: 'Azure App Service Deploy: website'
+      inputs:
+        azureSubscription: myAngularService
 
-      DeployToSlotFlag: true
+        WebAppName: angular-ssr
 
-      ResourceGroupName: admin
+        DeployToSlotFlag: true
 
-      Package: '$(Build.ArtifactStagingDirectory)/deploy-dist'
+        ResourceGroupName: admin
 
-      GenerateWebConfig: true
+        Package: '$(Build.ArtifactStagingDirectory)/deploy-dist'
 
-      WebConfigParameters: '-Handler iisnode -NodeStartFile main.js -appType node'
+        GenerateWebConfig: true
 
-      UseWebDeploy: false
+        WebConfigParameters: '-Handler iisnode -NodeStartFile main.js -appType node'
 
-      RemoveAdditionalFilesFlag: true
+        UseWebDeploy: false
+
+        RemoveAdditionalFilesFlag: true
