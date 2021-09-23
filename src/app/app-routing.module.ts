@@ -3,15 +3,15 @@ import { RouterModule, Routes } from '@angular/router';
 
 const routes: Routes = [
   {
-    path: "**",
-    redirectTo: ""
-   }
+    path: '**',
+    redirectTo: '',
+  },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes, {
-    initialNavigation: 'enabled'
-})],
-  exports: [RouterModule]
+    initialNavigation: 'enabled',
+  })],
+  exports: [RouterModule],
 })
 export class AppRoutingModule { }

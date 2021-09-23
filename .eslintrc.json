@@ -19,11 +19,7 @@
         "plugin:@angular-eslint/template/process-inline-templates",
         "plugin:@angular-eslint/ng-cli-compat",
         "plugin:@angular-eslint/ng-cli-compat--formatting-add-on",
-        "airbnb-typescript/base",
-        "prettier",
-        "plugin:prettier/recommended",
-        "plugin:@typescript-eslint/recommended-requiring-type-checking",
-        "plugin:@typescript-eslint/recommended"
+        "airbnb-typescript/base"
       ],
       "rules": {
         "@angular-eslint/directive-selector": [
@@ -54,13 +50,13 @@
           "error",
           {
             "ignoreStatic": true
-          },
+          }
         ],
         "no-underscore-dangle": [
           "warn",
           {
             "allowAfterThis": true
-          },
+          }
         ],
         "class-methods-use-this": "off",
         "lines-between-class-members": "off",
@@ -82,16 +78,6 @@
       ],
       "rules": {
         "max-len": ["error", { "code": 140 }] 
-      }
-    },
-    {
-      "files": ["src//*.spec.ts", "src/**/*.d.ts"],
-      "extends": ["plugin:jasmine/recommended"],
-      "plugins": ["jasmine"],
-      "env": { "jasmine": true },
-      "rules": {
-        "@typescript-eslint/no-unused-vars": "off",
-        "jasmine/prefer-toHaveBeenCalledWith": "off"
       }
     }
   ]
