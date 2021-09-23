@@ -29,6 +29,18 @@ steps:
     inputs:
       verbose: false
 
+  - task: Npm@1
+    displayName: 'Lint'
+    inputs:
+      command: 'custom'
+      customCommand: 'run lint'
+
+  - task: Npm@1
+    displayName: 'Test'
+    inputs:
+      command: 'custom'
+      customCommand: 'run test
+
   - script: "npm run build:ssr"
     displayName: "build the project"
 
