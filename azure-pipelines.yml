@@ -15,25 +15,25 @@ stages:
   - stage: Preparation
     displayName: Install all dependencies
     dependsOn: []
-    steps:
-      - task: NodeTool@0
-        inputs:
-          versionSpec: '14.x'
-        displayName: 'Install Node.js'
+      steps:
+        - task: NodeTool@0
+          inputs:
+            versionSpec: '14.x'
+          displayName: 'Install Node.js'
 
-      - task: Npm@1
-        displayName: 'npm install angular cli'
-        inputs:
-          command: custom
+        - task: Npm@1
+          displayName: 'npm install angular cli'
+          inputs:
+            command: custom
 
-          verbose: false
+            verbose: false
 
-          customCommand: 'install @angular/cli -g'
+            customCommand: 'install @angular/cli -g'
 
-      - task: Npm@1
-        displayName: 'npm install packages'
-        inputs:
-          verbose: false
+        - task: Npm@1
+          displayName: 'npm install packages'
+          inputs:
+            verbose: false
 
   # - stage: RunLinters
   #     displayName: Run Linters
