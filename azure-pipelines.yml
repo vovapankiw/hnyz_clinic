@@ -12,54 +12,54 @@ pool:
 steps:
   - task: NodeTool@0
     inputs:
-      versionSpec: "14.x"
-    displayName: "Install Node.js"
+      versionSpec: '14.x'
+    displayName: 'Install Node.js'
 
   - task: Npm@1
-    displayName: "npm install angular cli"
+    displayName: 'npm install angular cli'
     inputs:
       command: custom
 
       verbose: false
 
-      customCommand: "install @angular/cli -g"
+      customCommand: 'install @angular/cli -g'
 
   - task: Npm@1
-    displayName: "npm install packages"
+    displayName: 'npm install packages'
     inputs:
       verbose: false
 
   - task: Npm@1
-    displayName: 'Lint'
+    displayName: 'Running Lint'
     inputs:
       command: 'custom'
       customCommand: 'run lint'
 
   - task: Npm@1
-    displayName: 'Test'
+    displayName: 'Runing Test'
     inputs:
       command: 'custom'
-      customCommand: 'run test
+      customCommand: 'run test'
 
-  - script: "npm run build:ssr"
-    displayName: "build the project"
-
-  - task: CopyFiles@2
-    displayName: "Copy client to the root/browser"
-    inputs:
-      SourceFolder: "$(Build.SourcesDirectory)/dist/clinic/browser"
-
-      TargetFolder: "$(Build.ArtifactStagingDirectory)/deploy-dist/browser"
+  - script: 'npm run build:ssr'
+    displayName: 'build the project'
 
   - task: CopyFiles@2
-    displayName: "Copy server to the root"
+    displayName: 'Copy client to the root/browser'
     inputs:
-      SourceFolder: "$(Build.SourcesDirectory)/dist/clinic/server"
+      SourceFolder: '$(Build.SourcesDirectory)/dist/clinic/browser'
 
-      TargetFolder: "$(Build.ArtifactStagingDirectory)/deploy-dist"
+      TargetFolder: '$(Build.ArtifactStagingDirectory)/deploy-dist/browser'
+
+  - task: CopyFiles@2
+    displayName: 'Copy server to the root'
+    inputs:
+      SourceFolder: '$(Build.SourcesDirectory)/dist/clinic/server'
+
+      TargetFolder: '$(Build.ArtifactStagingDirectory)/deploy-dist'
 
   - task: AzureRmWebAppDeployment@4
-    displayName: "Azure App Service Deploy: website"
+    displayName: 'Azure App Service Deploy: website'
     inputs:
       azureSubscription: myAngularService
 
@@ -69,11 +69,11 @@ steps:
 
       ResourceGroupName: admin
 
-      Package: "$(Build.ArtifactStagingDirectory)/deploy-dist"
+      Package: '$(Build.ArtifactStagingDirectory)/deploy-dist'
 
       GenerateWebConfig: true
 
-      WebConfigParameters: "-Handler iisnode -NodeStartFile main.js -appType node"
+      WebConfigParameters: '-Handler iisnode -NodeStartFile main.js -appType node'
 
       UseWebDeploy: false
 
