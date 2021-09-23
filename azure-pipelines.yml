@@ -31,19 +31,19 @@ stages:
   #       inputs:
   #         verbose: false
 
-  - stage: RunLinters
-      displayName: Run Linters
-      dependsOn: [Preparation]
-    - job: build
-      pool:
-        vmImage: ubuntu-latest
+- stage: RunLinters
+    displayName: Run Linters
+    dependsOn: [Preparation]
+  - job: build
+    pool:
+      vmImage: ubuntu-latest
 
-      steps:
-        - task: Npm@1
-          displayName: 'Running Lint'
-          inputs:
-            command: 'custom'
-            customCommand: 'run lint'
+    steps:
+      - task: Npm@1
+        displayName: 'Running Lint'
+        inputs:
+          command: 'custom'
+          customCommand: 'run lint'
 
   # - stage: RunTests
   #     displayName: Run Tests
