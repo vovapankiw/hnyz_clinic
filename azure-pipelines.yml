@@ -34,12 +34,12 @@ steps:
     inputs:
       command: 'custom'
       customCommand: 'run lint'
-
-  - task: Npm@1
-    displayName: 'Runing Test'
-    inputs:
-      command: 'custom'
-      customCommand: 'run test'
+  # Comment to save free time on pipeline
+  # - task: Npm@1
+  #   displayName: 'Runing Test'
+  #   inputs:
+  #     command: 'custom'
+  #     customCommand: 'run test'
 
   - script: 'npm run build:ssr'
     displayName: 'build the project'
