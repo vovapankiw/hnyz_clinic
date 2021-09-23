@@ -4,44 +4,42 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
 trigger:
-  branches:
-    include:
-      - develop
+- main
 
 pool:
   vmImage: ubuntu-latest
 
 stages:
-  - stage: Preparation
-      steps:
-      - task: NodeTool@0
-        inputs:
-          versionSpec: '14.x'
-        displayName: 'Install Node.js'
-
-      - task: Npm@1
-        displayName: 'npm install angular cli'
-        inputs:
-          command: custom
-
-          verbose: false
-
-          customCommand: 'install @angular/cli -g'
-
-      - task: Npm@1
-        displayName: 'npm install packages'
-        inputs:
-          verbose: false
-
-  # - stage: RunLinters
-  #     displayName: Run Linters
-  #     dependsOn: [Preparation]
+  # - stage: Preparation
   #     steps:
-  #       - task: Npm@1
-  #         displayName: 'Running Lint'
-  #         inputs:
-  #           command: 'custom'
-  #           customCommand: 'run lint'
+  #     - task: NodeTool@0
+  #       inputs:
+  #         versionSpec: '14.x'
+  #       displayName: 'Install Node.js'
+
+  #     - task: Npm@1
+  #       displayName: 'npm install angular cli'
+  #       inputs:
+  #         command: custom
+
+  #         verbose: false
+
+  #         customCommand: 'install @angular/cli -g'
+
+  #     - task: Npm@1
+  #       displayName: 'npm install packages'
+  #       inputs:
+  #         verbose: false
+
+  - stage: RunLinters
+      displayName: Run Linters
+      dependsOn: [Preparation]
+      steps:
+        - task: Npm@1
+          displayName: 'Running Lint'
+          inputs:
+            command: 'custom'
+            customCommand: 'run lint'
 
   # - stage: RunTests
   #     displayName: Run Tests
