@@ -4,96 +4,77 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
 trigger:
-- main
+  - main
 
 pool:
   vmImage: ubuntu-latest
 
-stages:
-  # - stage: Preparation
-  #     steps:
-  #     - task: NodeTool@0
-  #       inputs:
-  #         versionSpec: '14.x'
-  #       displayName: 'Install Node.js'
+steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '14.x'
+    displayName: 'Install Node.js'
 
-  #     - task: Npm@1
-  #       displayName: 'npm install angular cli'
-  #       inputs:
-  #         command: custom
+  - task: Npm@1
+    displayName: 'npm install angular cli'
+    inputs:
+      command: custom
 
-  #         verbose: false
+      verbose: false
 
-  #         customCommand: 'install @angular/cli -g'
+      customCommand: 'install @angular/cli -g'
 
-  #     - task: Npm@1
-  #       displayName: 'npm install packages'
-  #       inputs:
-  #         verbose: false
+  - task: Npm@1
+    displayName: 'npm install packages'
+    inputs:
+      verbose: false
 
-- stage: RunLinters
-    displayName: Run Linters
-    dependsOn: [Preparation]
-  - job: build
-    pool:
-      vmImage: ubuntu-latest
+  - task: Npm@1
+    displayName: 'Running Lint'
+    inputs:
+      command: 'custom'
+      customCommand: 'run lint'
 
-    steps:
-      - task: Npm@1
-        displayName: 'Running Lint'
-        inputs:
-          command: 'custom'
-          customCommand: 'run lint'
+  - task: Npm@1
+    displayName: 'Runing Test'
+    inputs:
+      command: 'custom'
+      customCommand: 'run test'
 
-  # - stage: RunTests
-  #     displayName: Run Tests
-  #     dependsOn: [RunLinters]
-  #     steps:
-  #       - task: Npm@1
-  #         displayName: 'Running Test'
-  #         inputs:
-  #           command: 'custom'
-  #           customCommand: 'run test'
+  - script: 'npm run build:ssr'
+    displayName: 'build the project'
 
-  # - stage: build
-  #   dependsOn: [RunTests]
-  #   condition: and(succeeded('RunTests'), True))
-  #   steps:
-  #     - script: 'npm run build:ssr'
-  #       displayName: 'build the project'
+  - task: CopyFiles@2
+    displayName: 'Copy client to the root/browser'
+    inputs:
+      SourceFolder: '$(Build.SourcesDirectory)/dist/clinic/browser'
 
-  #     - task: CopyFiles@2
-  #       displayName: 'Copy client to the root/browser'
-  #       inputs:
-  #         SourceFolder: '$(Build.SourcesDirectory)/dist/clinic/browser'
+      TargetFolder: '$(Build.ArtifactStagingDirectory)/deploy-dist/browser'
 
-  #         TargetFolder: '$(Build.ArtifactStagingDirectory)/deploy-dist/browser'
+  - task: CopyFiles@2
+    displayName: 'Copy server to the root'
+    inputs:
+      SourceFolder: '$(Build.SourcesDirectory)/dist/clinic/server'
 
-  #     - task: CopyFiles@2
-  #       displayName: 'Copy server to the root'
-  #       inputs:
-  #         SourceFolder: '$(Build.SourcesDirectory)/dist/clinic/server'
+      TargetFolder: '$(Build.ArtifactStagingDirectory)/deploy-dist'
 
-  #         TargetFolder: '$(Build.ArtifactStagingDirectory)/deploy-dist'
+  - task: AzureRmWebAppDeployment@4
+    displayName: 'Azure App Service Deploy: website'
+    inputs:
+      azureSubscription: myAngularService
 
-  # - stage: deploy
-  #   - task: AzureRmWebAppDeployment@4
-  #     displayName: 'Azure App Service Deploy: website'
-  #     inputs:
-  #       azureSubscription: myAngularService
+      WebAppName: angular-ssr
 
-  #       WebAppName: angular-ssr
+      DeployToSlotFlag: true
 
-  #       DeployToSlotFlag: true
+      ResourceGroupName: admin
 
-  #       ResourceGroupName: admin
+      Package: '$(Build.ArtifactStagingDirectory)/deploy-dist'
 
-  #       Package: '$(Build.ArtifactStagingDirectory)/deploy-dist'
+      GenerateWebConfig: true
 
-  #       GenerateWebConfig: true
+      WebConfigParameters: '-Handler iisnode -NodeStartFile main.js -appType node'
 
-  #       WebConfigParameters: '-Handler iisnode -NodeStartFile main.js -appType node'
+      UseWebDeploy: false
 
-  #       UseWebDeploy: false
-
-  #       RemoveAdditionalFilesFlag: true
+      RemoveAdditionalFilesFlag: true
