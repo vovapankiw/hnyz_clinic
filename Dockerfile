@@ -5,7 +5,7 @@ COPY package.json package.json
 COPY package-lock.json package-lock.json
 RUN npm ci  --debug 
 COPY . .
-RUN ng build --prod
+RUN npm run build
 
 FROM nginx:1.17.5
 COPY default.conf.template /etc/nginx/conf.d/default.conf.template
