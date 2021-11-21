@@ -1,15 +1,16 @@
-
-FROM trion/ng-cli as builder
+FROM node:13.10.1 AS build
 WORKDIR /app
-COPY package.json package.json
-COPY package-lock.json package-lock.json
-RUN npm ci  --debug 
-COPY . .
+COPY ./package.json /app/
+RUN npm install
+COPY . /app/
+# this will build the browser and server files:
 RUN npm run build
-
-FROM nginx:1.17.5
-COPY default.conf.template /etc/nginx/conf.d/default.conf.template
-COPY nginx.conf /etc/nginx/nginx.conf
-COPY --from=builder  /app/dist/clinic/server /usr/share/nginx/html 
-COPY --from=builder  /app/dist/clinic/browser /usr/share/nginx/html/browser 
-CMD /bin/bash -c "envsubst '\$PORT' < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf" && nginx -g 'daemon off;'
+FROM nginx:1.16.1 AS client-browser
+COPY — from=build /app/dist/client/browser/ /usr/share/nginx/html/
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+FROM node:13.10.1-alpine AS ssr-server
+COPY — from=build /app/dist /app/dist/
+COPY ./package.json /app/package.json
+WORKDIR /app
+EXPOSE 4000
+CMD npm run serve:ssr
