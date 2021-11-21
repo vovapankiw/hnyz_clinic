@@ -1,25 +1,15 @@
-# https://dev.to/avatsaev/create-efficient-angular-docker-images-with-multi-stage-builds-1f3n
 
-# STAGE 1: Build
-FROM node:lts-alpine as builder
+FROM trion/ng-cli as builder
+WORKDIR /app
+COPY package.json package.json
+COPY package-lock.json package-lock.json
+RUN npm ci  --debug 
+COPY . .
+RUN ng build --prod
 
-WORKDIR /tmp
-ADD package.json ./package.json
-ADD package-lock.json ./package-lock.json
 
-RUN npm ci
-
-ADD . .
-
-RUN npm run build:ssr
-
-# STAGE 2: Run
-FROM nginx:1.17.2-alpine
-
-# From "builder" stage copy over the artifacts in dist folder to default nginx public folder
-COPY --from=builder /tmp/dist /usr/share/nginx/html
-ADD nginx.conf /etc/nginx/conf.d/default.conf
-
-EXPOSE 80
-
-CMD nginx -g "daemon off;"
+FROM nginx:1.17.5
+COPY default.conf.template /etc/nginx/conf.d/default.conf.template
+COPY nginx.conf /etc/nginx/nginx.conf
+COPY --from=builder  /app/dist/my-first-app /usr/share/nginx/html 
+CMD /bin/bash -c "envsubst '\$PORT' < /etc/nginx/conf.d/default.conf.template > /etc/nginx/conf.d/default.conf" && nginx -g 'daemon off;'
