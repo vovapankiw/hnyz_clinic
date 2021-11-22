@@ -7,6 +7,4 @@ server {
     root   /usr/share/nginx/html/;
     index   main.js main.js;
   }
-
-
 }
