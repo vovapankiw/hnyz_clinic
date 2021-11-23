@@ -14,7 +14,7 @@ COPY default.conf.template /etc/nginx/conf.d/default.conf.template
 COPY nginx.conf /etc/nginx/nginx.conf
 
 COPY --from=builder  /app/dist/clinic/server /usr/share/nginx/html
-COPY --from=builder  /app/dist/clinic/browser /usr/share/nginx/html 
+COPY --from=builder  /app/dist/clinic/browser /usr/share/nginx/html/browser 
 
 RUN ls '/usr/share/nginx/html'
 RUN cat '/usr/share/nginx/html/index.html'
